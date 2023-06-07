@@ -120,7 +120,7 @@ class StudentController extends Controller
                 $extension = $request->file('file')->getClientOriginalExtension();
                 $newName = $request->title.'-'.now()->timestamp.'.'.$extension;
                 $request->file('file')->move(public_path('/storage'), $newName);
-            }
+            }   
     
             $request['image'] = $newName;
             $students = Student::update($request->all());
