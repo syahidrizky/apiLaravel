@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('rombel');
             $table->string('rayon');
+            $table->string('image');
             $table->softDeletes();
             $table->timestamps();
         });

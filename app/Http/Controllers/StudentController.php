@@ -38,18 +38,28 @@ class StudentController extends Controller
     {
         try {
             $request->validate([
-                'nis' => 'required|min:8',
-                'nama' => 'required|min:3',
+                'nis' => 'required',
+                'nama' => 'required',
                 'rombel' => 'required',
                 'rayon' => 'required',
             ]);
 
-            $student = Student::create([
-                'nis' => $request->nis,
-                'nama' => $request->nama,
-                'rombel' => $request->rombel,
-                'rayon' => $request->rayon,
-            ]);
+            $newName = '';
+            if($request->file){
+                $extension = $request->file('file')->getClientOriginalExtension();
+                $newName = $request->title.'-'.now()->timestamp.'.'.$extension;
+                $request->file('file')->move(public_path('/storage'), $newName);
+            }
+    
+            $request['image'] = $newName;
+            $student = Student::create($request->all());
+
+            // $student = Student::create([
+            //     'nis' => $request->nis,
+            //     'nama' => $request->nama,
+            //     'rombel' => $request->rombel,
+            //     'rayon' => $request->rayon,
+            // ]);
 
             $getDateSaved = Student::where('id', $student->id)->first();
 
@@ -77,7 +87,7 @@ class StudentController extends Controller
                 return ApiFormatter::createApi(400, 'failed');
             }
         } catch (Exception $error) {
-            return ApiFormatter::createApi(400, 'failed');
+            return ApiFormatter::createApi(400, 'failed', $error);
         }
     }
 
@@ -96,20 +106,30 @@ class StudentController extends Controller
     {
         try {
             $request->validate([
-                'nis' => 'required|min:8',
-                'nama' => 'required|min:3',
+                'nis' => 'required',
+                'nama' => 'required',
                 'rombel' => 'required',
                 'rayon' => 'required',
+                'image' => 'required',
             ]);
 
             $student = Student::findOrFail($id);
 
-            $student->update([
-                'nis' => $request->nis,
-                'nama' => $request->nama,
-                'rombel' => $request->rombel,
-                'rayon' => $request->rayon,
-            ]);
+            $newName = '';
+            if($request->file){
+                $extension = $request->file('file')->getClientOriginalExtension();
+                $newName = $request->title.'-'.now()->timestamp.'.'.$extension;
+                $request->file('file')->move(public_path('/storage'), $newName);
+            }
+    
+            $request['image'] = $newName;
+            $students = Student::update($request->all());
+            // $student->update([
+            //     'nis' => $request->nis,
+            //     'nama' => $request->nama,
+            //     'rombel' => $request->rombel,
+            //     'rayon' => $request->rayon,
+            // ]);
 
             $updatedStudent = Student::where('id', $student->id)->first();
             
@@ -119,7 +139,7 @@ class StudentController extends Controller
                 return ApiFormatter::createApi(400, 'failed');
             }
         } catch (Exception $error) {
-            return ApiFormatter::createApi(400, 'failed');
+            return ApiFormatter::createApi(400, 'failed', $error);
         }
     }
 
@@ -139,7 +159,7 @@ class StudentController extends Controller
                 return ApiFormatter::createApi(400, 'failed');
             }
         } catch (Exception $error) {
-            return ApiFormatter::createApi(400, 'failed');
+            return ApiFormatter::createApi(400, 'failed', $error);
         }
     }
 

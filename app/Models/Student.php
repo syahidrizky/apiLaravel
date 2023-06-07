@@ -15,6 +15,7 @@ class Student extends Model
         'nis',
         'nama',
         'rombel',
-        'rayon'
+        'rayon',
+        'image',
     ];
 }
